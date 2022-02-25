@@ -25,7 +25,7 @@ async function main() {
 
   await mahjong.deployed();
 
-  console.log("Mahjong deployed to:", mahjong);
+  console.log("Mahjong deployed to:", mahjong.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

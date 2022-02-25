@@ -31,14 +31,20 @@ module.exports = {
     settings: {
       optimizer: { // EIP 170: 24576
         enabled: true,
-        runs: 4000000000
+        runs: 10000
       }
     }
   },
   networks: {
-    ropsten: {
-      url: "https://ropsten.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
-      chainId: 3,
+    rinkeby: {
+      url: "https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+      chainId: 4,
+      accounts:
+        [fs.readFileSync("./.private_keys/test.key", "utf8").trim()],
+    },
+    mumbai: {
+      url: "https://matic-mumbai.chainstacklabs.com",
+      chainId: 80001,
       accounts:
         [fs.readFileSync("./.private_keys/test.key", "utf8").trim()],
     },

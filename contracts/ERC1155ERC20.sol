@@ -3,11 +3,12 @@ pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol";
 import "@openzeppelin/contracts/token/ERC1155/extensions/IERC1155MetadataURI.sol";
 
-contract ERC1155ERC20 is ERC165, IERC20, IERC1155, IERC1155MetadataURI {
+contract ERC1155ERC20 is ERC165, IERC20, IERC20Metadata, IERC1155, IERC1155MetadataURI {
     string private _name;
     string private _symbol;
     string private _uri;
@@ -76,7 +77,7 @@ contract ERC1155ERC20 is ERC165, IERC20, IERC1155, IERC1155MetadataURI {
      * @dev See {IERC20-balanceOf}.
      */
     function balanceOf(address account) external view returns (uint256) {
-        return balanceOf(account, 0);
+        return _balances[0][account];
     }
 
     /**
@@ -149,6 +150,7 @@ contract ERC1155ERC20 is ERC165, IERC20, IERC1155, IERC1155MetadataURI {
         uint256 amount,
         bytes memory data
     ) external {
+        require(id > 0, "0 id");
         require(
             from == msg.sender || isApprovedForAll(from, msg.sender),
             "not approved"
@@ -234,11 +236,12 @@ contract ERC1155ERC20 is ERC165, IERC20, IERC1155, IERC1155MetadataURI {
         }
         _balances[id][to] += amount;
 
-        emit TransferSingle(msg.sender, from, to, id, amount);
         if (id == 0) {
             emit Transfer(from, to, amount);
+            return;
         }
 
+        emit TransferSingle(msg.sender, from, to, id, amount);
         _doSafeTransferAcceptanceCheck(msg.sender, from, to, id, amount, data);
     }
 
@@ -254,6 +257,8 @@ contract ERC1155ERC20 is ERC165, IERC20, IERC1155, IERC1155MetadataURI {
 
         for (uint256 i = 0; i < ids.length; ++i) {
             uint256 id = ids[i];
+            require(id > 0, "0 id");
+
             uint256 amount = amounts[i];
 
             uint256 fromBalance = _balances[id][from];
@@ -282,11 +287,12 @@ contract ERC1155ERC20 is ERC165, IERC20, IERC1155, IERC1155MetadataURI {
         require(to != address(0), "0 address");
 
         _bareMint(to, id, amount);
-        emit TransferSingle(msg.sender, address(0), to, id, amount);
         if (id == 0) {
             emit Transfer(address(0), to, amount);
+            return;
         }
 
+        emit TransferSingle(msg.sender, address(0), to, id, amount);
         _doSafeTransferAcceptanceCheck(msg.sender, address(0), to, id, amount, data);
     }
 
@@ -313,9 +319,10 @@ contract ERC1155ERC20 is ERC165, IERC20, IERC1155, IERC1155MetadataURI {
             _balances[id][from] = fromBalance - amount;
         }
 
-        emit TransferSingle(msg.sender, from, address(0), id, amount);
         if (id == 0) {
             emit Transfer(from, address(0), amount);
+        } else {
+            emit TransferSingle(msg.sender, from, address(0), id, amount);
         }
     }
 
