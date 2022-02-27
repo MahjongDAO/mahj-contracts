@@ -58,7 +58,10 @@ contract ERC1155ERC20 is ERC165, IERC20, IERC20Metadata, IERC1155, IERC1155Metad
         return 1;
     }
 
-    function uri(uint256) public view virtual returns (string memory) {
+    function uri(uint256 id) public view virtual returns (string memory) {
+        if (id == 0) {
+            return "";
+        }
         return _uri;
     }
 
@@ -368,7 +371,7 @@ contract ERC1155ERC20 is ERC165, IERC20, IERC20Metadata, IERC1155, IERC1155Metad
         }
     }
 
-    function isContract(address account) private view returns (bool) {
+    function isContract(address account) public view returns (bool) {
         // This method relies on extcodesize, which returns 0 for contracts in
         // construction, since the code is only stored at the end of the
         // constructor execution.

@@ -20,7 +20,7 @@ async function main() {
   }
 
   // We get the contract to deploy
-  const Mahjong = await hre.ethers.getContractFactory("Mahjong");
+  const Mahjong = await hre.ethers.getContractFactory("MahjongDAO");
   const mahjong = await Mahjong.deploy();
 
   await mahjong.deployed();
