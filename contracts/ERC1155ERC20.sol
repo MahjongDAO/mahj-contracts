@@ -131,11 +131,13 @@ contract ERC1155ERC20 is ERC165, IERC20, IERC20Metadata, IERC1155, IERC1155Metad
         require(recipient != address(0), "0 address");
         require(holder != address(0), "0 address");
 
-        uint256 currentAllowance = _allowances[holder][msg.sender];
-        if (currentAllowance != type(uint256).max) {
-            require(currentAllowance >= amount, "exceeds allowance");
-            unchecked {
-                _approve(holder, msg.sender, currentAllowance - amount);
+        if (msg.sender != holder) {
+            uint256 currentAllowance = _allowances[holder][msg.sender];
+            if (currentAllowance != type(uint256).max) {
+                require(currentAllowance >= amount, "exceeds allowance");
+                unchecked {
+                    _approve(holder, msg.sender, currentAllowance - amount);
+                }
             }
         }
 

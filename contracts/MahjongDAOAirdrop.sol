@@ -46,7 +46,7 @@ contract MahjongDAOAirdrop is Ownable, ERC165, IERC1155Receiver {
 
     function withdraw(uint256 id, uint256 amount) external onlyOwner {
         if (id == 0) {
-            token.transferFrom(address(this), msg.sender, amount);
+            token.transfer(msg.sender, amount);
         } else {
             token.safeTransferFrom(address(this), msg.sender, id, amount, "");
         }
@@ -70,7 +70,7 @@ contract MahjongDAOAirdrop is Ownable, ERC165, IERC1155Receiver {
         require(token.balanceOf(address(this), id) >= amount, "insufficient funds");
 
         if (id == 0) {
-            token.transferFrom(address(this), msg.sender, amount);
+            token.transfer(msg.sender, amount);
         } else {
             token.safeTransferFrom(address(this), msg.sender, id, amount, "");
         }

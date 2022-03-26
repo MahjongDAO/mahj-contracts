@@ -21,7 +21,7 @@ async function main() {
 
   // We get the contract to deploy
   const Airdrop = await hre.ethers.getContractFactory("MahjongDAOAirdrop");
-  const airdrop = await Airdrop.deploy("0x5FbDB2315678afecb367f032d93F642f64180aa3");
+  const airdrop = await Airdrop.deploy("0x9831F71ed9E5015e62D3412716ffb8aae122eF2a");
 
   await airdrop.deployed();
 
